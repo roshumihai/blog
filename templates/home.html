@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block content%}
+<!-- NAVIGATION BAR -->
+    <div class="topnav">
+      <a class="active" href="{{ url_for('home') }}">Home</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      
+      <div class="login-container">
+        <p>{{ current_user.username.title() }}</p>
+        <a href="{{ url_for('logout') }}">Logout</a>
+      </div>
+    </div>
+
+<!--   <a href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='572.png') }}" alt="Blogger-logo" class="image-logo"></a>-->
+
+
+    <div class="home-container">
+      <!-- COLUMN 1 CREATE NEW POST -->
+      <div class="column-1">
+        <div class="column-post">
+          <h2>Create New Post</h2>
+          <form action="{{ url_for('home') }}" class="post-form" method="post" enctype="multipart/form-data">
+            {{ create_post_form.csrf_token }}
+              <h3>Title</h3><br>
+            {{ create_post_form.title(class="create-post-title") }}<br><br>
+              <h3>Description</h3>
+            {{ create_post_form.comment(class="create-post-comment") }}<br><br>
+            {{ create_post_form.image() }}
+            {{ create_post_form.submit(class="create-post-submit") }}
+          </form>
+        </div>
+      </div>
+      
+      <!-- COLUMN 2 RECENT POSTS -->
+
+      <div class="column-2">
+        <div class="column-comments">
+          <h2 class="h2-posts">Recent Posts</h2>
+          <ul class="comments-ul">
+              {% for post in posts %}
+              <li>
+                <!-- TITLE -->
+                <h3 class="title-comments">{{ post.title.title() }}</h3>
+                
+                <!-- POST CONTENT -->
+                <p class="post-comments">
+                  &nbsp;&nbsp;&nbsp;&nbsp;{{ post.comment }}
+                </p>
+                
+                <!-- UPLOADED IMAGE -->
+                {% if post.image_filename %}
+                <img src="{{ url_for('static', filename='uploads/' + post.image_ref) }}" alt="Post Image" class="post-image">
+                {% endif %}
+                  {% if post.user.username %}
+
+                  <!-- DETAILS OF POST: NAME, DATE, HOUR -->
+                <div class="name-user-post">
+                  Posted by &nbsp;&nbsp;
+                  <span class="name-date-text">{{ post.user.username.title() }} </span>
+                  &nbsp; at&nbsp;&nbsp;
+                  <span class="name-date-text"> {{ post.created_at.strftime('%d %B %Y,  %I:%M %p') }}</span>
+                </div>
+                  {% endif %}
+                
+                  <!-- DELETE POST BUTTON -->
+                {% if post.is_owner or current_user.username.lower() == "roshu" %}
+                <form action="{{ url_for('delete_post', post_id=post.post_id) }}" method="post" class="delete-button-form">
+                  {{ post.csrf_token }}
+                  <button type="submit" class="delete-button">Delete</button>
+                </form>
+                {% endif %}
+              </li>
+              
+
+              <ul class="comment-list">
+                {% for comment in post.comments %}
+                  {% if comment.user.username %}
+                <li class="commented-post">
+                    <!-- NAME OF THE USER WHO COMMENT -->
+                    <h3 class="commented-post-user">{{ comment.user.username.title() }}</h3>
+
+                    <!-- DELETE COMMENT FORM AND BUTTON -->
+                    {% if current_user.is_authenticated and (current_user == comment.user or current_user.admin) %}
+                    <form action="{{ url_for('delete_comment', comment_id=comment.comment_id) }}" method="post">
+                        <button class="delete-comment-button">X</button>
+                    </form>
+                    {% endif %}
+                    <!-- THE COMMENT CONTENT -->
+                    <p class="commented-post-comment">&nbsp;&nbsp;&nbsp;&nbsp;{{ comment.text }}</p>
+                    {% if comment.image_filename %}
+                    <img src="{{ url_for('static', filename='uploads/' + comment.image_ref) }}" alt="Comment Image" class="comment-image">
+                    {% endif %}
+
+                    <!-- COMMENT POSTED DATE -->
+                    <p class="commented-post-date">{{ comment.created_at.strftime('%d %B %Y,  %I:%M %p') }}</p>
+                </li>
+                  {% endif %}
+                
+                {% endfor %}
+              </ul>
+              
+              <form action="{{ url_for('add_comment', post_id=post.post_id) }}" method="post" class="add-comment-form" enctype="multipart/form-data">
+                {{ add_comment_form.csrf_token }}
+                {{ add_comment_form.comment(class="text-comments") }}
+                {{ add_comment_form.image() }}
+                {{ add_comment_form.submit(class="submit-comments") }}
+              </form>
+              {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+{% endblock %}

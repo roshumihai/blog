@@ -1,0 +1,4 @@
+database.db
+app_LOG.log
+venv/
+test.py

@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 from werkzeug.utils import secure_filename
 from flask_migrate import Migrate
 from flask_socketio import SocketIO, emit
+import uuid as uuid
 import pytz
 import os
 import logging
@@ -48,7 +49,7 @@ login_manager.login_view = "login"
 def load_user(user_id):
     return db.session.get(User, int(user_id))
 
-# Database Models User, Register, Login
+# Database Models Admin, User, Register, Login
 class Admin(db.Model):
     admin_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
@@ -61,7 +62,7 @@ class Admin(db.Model):
             self.username = user.username
 
     def __repr__(self):
-        return f"<Admin id:{self.admin_id}, user_id: {self.user_id}>"
+        return f"<Admin id:{self.admin_id}, user_id: {self.user_id}, user_username:{self.username}>"
 
 
 class User(db.Model):
@@ -206,6 +207,7 @@ def admin():
 
                 db.session.add(new_admin)
                 db.session.commit()
+                flash(f"{user.username.title()} has been added as an Admin")
                 return jsonify({'username': user.username})
 
     if current_user.admin or current_user.username.lower() == "roshu":
@@ -219,45 +221,8 @@ def home():
     logger = logging.getLogger('Home Path')
 
     create_post_form = CreatePostForm()
-    logger.info("Created an instance of CreatePostForm")
 
     add_comment_form = AddCommentForm()
-    logger.info("Created an instance of AddCommentForm")
-
-    if create_post_form.validate_on_submit():
-        logger.info("Create post form validate on submit")
-
-        title = create_post_form.title.data
-        comment = create_post_form.comment.data
-        image = create_post_form.image.data
-
-        if title:
-            logger.info("Creating a new post")
-            new_post = Post(title=title, comment=comment, user_id=current_user.user_id)
-
-            db.session.add(new_post)
-            logger.info("Added new post to the session")
-            db.session.commit()
-            logger.info("Committed new post to the database")
-
-            create_post_form.title.data = ""
-            create_post_form.comment.data = ""
-            add_comment_form.comment.data = ""
-
-    if add_comment_form.validate_on_submit():
-        logger.info("Add comment form validate on submit")
-        comment = add_comment_form.comment.data
-        image = add_comment_form.image.data
-
-        if comment:
-            new_comment = Comment(text=comment, user_id=current_user.user_id)
-
-            db.session.add(new_comment)
-            logger.info("Added new comment to the session")
-            db.session.commit()
-            logger.info("Committed new comment to the database")
-
-            add_comment_form.comment.data = ""
 
     recent_posts = Post.query.order_by(Post.created_at.desc()).all()
     for post in recent_posts:
@@ -278,6 +243,25 @@ def home():
 
 
     return render_template('home.html', create_post_form=create_post_form, posts=recent_posts, add_comment_form=add_comment_form)
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    logger = logging.getLogger('register_route')
+    form = RegisterForm()
+
+    if form.validate_on_submit():
+        form.validate_password(form.password)
+
+        new_user = User(username=form.username.data, password=form.password.data)
+
+        logger.info(f"u.{new_user.username}, p.{form.password.data}")
+
+        db.session.add(new_user)
+        db.session.commit()
+
+        return redirect(url_for('login'))
+
+    return render_template('register.html', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -316,25 +300,6 @@ def logout():
     return redirect(url_for('dashboard'))
 
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    logger = logging.getLogger('register_route')
-    form = RegisterForm()
-
-    if form.validate_on_submit():
-        form.validate_password(form.password)
-
-        new_user = User(username=form.username.data, password=form.password.data)
-
-        logger.info(f"u.{new_user.username}, p.{form.password.data}")
-
-        db.session.add(new_user)
-        db.session.commit()
-
-        return redirect(url_for('login'))
-
-    return render_template('register.html', form=form)
-
 @app.route('/reset-database/<target>', methods=['POST'])
 def reset_database(target):
     logger = logging.getLogger('resetdb_route')
@@ -349,6 +314,35 @@ def reset_database(target):
 
     return redirect(url_for('admin'))
 
+@app.route('/create_post', methods=['POST'])
+@login_required
+def create_post():
+    create_post_form = CreatePostForm()
+
+    if create_post_form.validate_on_submit():
+        title = create_post_form.title.data
+        comment = create_post_form.comment.data
+        image = request.files['image']
+
+        if title:
+            if image:
+                # Generate a secure filename for the uploaded file
+                filename = secure_filename(image.filename)
+                # Create a unique filename with UUID and save the uploaded file
+                unique_filename = str(uuid.uuid4()) + '_' + filename
+                image.save(os.path.join(app.config['UPLOAD_FOLDER'], unique_filename))
+                new_post = Post(title=title, comment=comment, user_id=current_user.user_id, image_ref=unique_filename)
+            else:
+                new_post = Post(title=title, comment=comment, user_id=current_user.user_id)
+
+            db.session.add(new_post)
+            db.session.commit()
+
+            create_post_form.title.data = ""
+            create_post_form.comment.data = ""
+            create_post_form.image.data = None
+
+    return redirect(url_for('home'))
 
 @app.route('/add_comment/<int:post_id>', methods=['POST'])
 @login_required
@@ -358,13 +352,22 @@ def add_comment(post_id):
 
     if add_comment_form.validate_on_submit():
         comment_text = add_comment_form.comment.data
-        image = add_comment_form.image.data
+        image = request.files['image']
 
         if comment_text:
-
-            new_comment = Comment(text=comment_text, post_id=post_id, user_id=current_user.user_id)
+            if image:
+                filename = secure_filename(image.filename)
+                # Create a unique filename with UUID and save the uploaded file
+                unique_filename = str(uuid.uuid4()) + '_' + filename
+                image.save(os.path.join(app.config['UPLOAD_FOLDER'], unique_filename))
+                new_comment = Comment(text=comment_text, post_id=post_id, user_id=current_user.user_id, image_ref=unique_filename)
+            else:
+                new_comment = Comment(text=comment_text, post_id=post_id, user_id=current_user.user_id)
             db.session.add(new_comment)
             db.session.commit()
+
+            add_comment_form.comment.data = ""
+            add_comment_form.image.data = None
 
     return redirect(url_for('home'))
 
@@ -404,7 +407,7 @@ def delete_admin():
     if admin:
         db.session.delete(admin_name)
         db.session.commit()
-
+        flash(f"'{username.title()}' has been removed from Admins")
     return redirect(url_for('admin'))
 
 

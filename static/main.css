@@ -6,9 +6,8 @@
 body {
     margin: 0;
     font-family: Roboto, Arial, sans-serif;
-    background-color: #191934;
+    background-color: #181f3b;
     color: #f3eae8;
-    margin-left: 1%;
 }
 
 /* Navigation styles */
@@ -16,7 +15,7 @@ body {
     position: sticky;
     top: 0;
     left: 0;
-    margin-top: 1%;
+    margin: 1% 0 0 1%;
     overflow: hidden;
     background-color: #181f3b;
     z-index: 1;
@@ -45,87 +44,19 @@ body {
     font-weight: bold;
 }
 
-.image-logo {
-    position: absolute;
-    top: 0.6%;
-    left: 18%;
-    width: 200px;
-    max-height: 70px;
-    padding: 10px;
-    border-radius: 15px;
-}
-
 /* Dashboard content*/
 
 .content {
     text-align: center;
     margin: 5% 5% 0 0;
 }
-.content h1 {
-    color: #e39215;
-    font-size: 55px;
-}
-.content p {
-    font-size: 25px;
-}
-
-.posts-container {
-    width: 40%;
-}
-
-.header-latest-posts {
-    font-size: 20px;
-    color:#e39215;
-    margin-left: 10%;
-}
-
-.latest-post-list {
-    position: relative;
-    list-style-type: none;
-    border-bottom: thick double #77767c;
-    padding: 25px 15px;
-}
-
-.latest-post-title {
-    font-size: 15px;
-    color: #d0ceff;
-    margin-left: 10%;
-}
-
-.latest-post-comment {
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    white-space: pre-line;
-    background-color: #2f2f61;
-    padding: 30px 20px 30px 25px;
-    letter-spacing: 1.2px;
-    line-height: 21px;
-    font-size: 14px;
-    border-radius: 4px;
-    margin-left: 1%;
-}
-
-.latest-post-username {
-    font-size: 12px;
-    width: 60%;
-    padding: 7px;
-}
-
-.latest-post-name {
-    font-size: 13px;
-    color: #2098c0;
-}
-
-.latest-post-date {
-    position: absolute;
-    bottom: 20px;
-    right: 2.5%;
-    font-size: 12px;
-    color: #ff78a8;
-}
-
 
 /* Login container */
+.title-auth {
+    text-align: center;
+    color: #e39215;
+}
+
 .login-container {
     display: flex;
     flex-direction: row;
@@ -149,11 +80,11 @@ body {
 .sign-up {
     margin-top: 15px;
     text-align: center;
-    margin-right: 50px;
 }
 
 .sign-up a {
-    color: white;
+    text-decoration: none;
+    color: #d0ceff;
 }
 
 /* Form input styles */
@@ -163,7 +94,6 @@ body {
 
 .input-form .form-group {
     text-align: center;
-    margin-right: 50px;
     margin-top: 2%;
 }
 
@@ -273,14 +203,14 @@ body {
 
 .column-1 h2 {
     color: #e39215;
-    font-size: 34px;
+    font-size: 24px;
     font-family: Andale Mono, monospace;
     margin-bottom: 25%;
 }
 
 .column-2 h2 {
     color: #e39215;
-    font-size: 34px;
+    font-size: 24px;
     font-family: Andale Mono, monospace;
 }
 
@@ -296,6 +226,7 @@ body {
 .column-post h3 {
     text-align: start;
     color: #d0ceff;
+    font-size: 14px;
 }
 
 .h2-posts {
@@ -330,7 +261,7 @@ body {
     background-color: transparent;
     color: white;
     text-align: center;
-    font-size: 21px;
+    font-size: 14px;
     border: none;
     border-bottom: 1px solid #a9b3c2;
     transition: box-shadow 0.3s, border 0.3s;
@@ -398,7 +329,7 @@ body {
 }
 
 .title-comments {
-    font-size: 24px;
+    font-size: 18px;
     color: #d0ceff;
     font-family:Arial, Helvetica, sans-serif;
     margin-left: 5%;
@@ -408,7 +339,7 @@ body {
     color: #191934;
     white-space: pre-line;
     margin-left: 20px;
-    padding: 2px 30px 37px 30px;
+    padding: 2px 30px 20px 30px;
     font-size: 14px;
     border-bottom: 1px solid #eaeff4;
     word-wrap: break-word;
@@ -527,9 +458,10 @@ body {
 }
 
 .post-image {
-    margin: 35px auto;
+    margin: 25px auto;
     display: block;
     max-height: 300px;
+    max-width: 500px;
     border: 2px solid #ffecff;
     padding: 10px;
     cursor: pointer;

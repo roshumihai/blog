@@ -5,16 +5,8 @@
 {% endblock %}
 
 {% block content %}
-<div class="topnav">
-      <a href="{{ url_for('dashboard') }}">Home</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-      <div class="login-container">
-        <a href="{{ url_for('login') }}">Login</a>
-        <a  class="active" href="{{ url_for('register') }}">Register</a>
-      </div>
-    </div>
-  <h1 class="title-auth">Register</h1>
+
+<h1 class="title-auth">Register</h1>
 <div class="input-form">
     <form method="POST" action="">
         {{ form.hidden_tag() }}

@@ -1,0 +1,40 @@
+
+
+.messages-container {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.messages-content {
+    border-left: 2px solid white;
+    border-right: 2px solid white;
+    padding: 5px 30px;
+}
+
+.messages-ul {
+    margin-bottom: 30px;
+    background-color: rgba(222, 222, 888, 0.1);
+    padding: 25px 45px;
+    list-style: none;
+    letter-spacing: 1.2px;
+    line-height: 30px;
+}
+
+.messages-ul p {
+    color: #d0ceff;
+    font-size: 16px;
+}
+
+.messages-sender {
+    color: #e39215;
+}
+
+.messages-ul li {
+    font-size: 14px;
+    white-space: pre-line;
+    line-height: 20px;
+}
+
+.message-li-time {
+    color: #a8a139;
+}

@@ -5,15 +5,7 @@
 {% endblock %}
 
 {% block content %}
-  <div class="topnav">
-      <a href="{{ url_for('dashboard') }}">Home</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-      <div class="login-container">
-        <a  class="active" href="{{ url_for('login') }}">Login</a>
-        <a href="{{ url_for('register') }}">Register</a>
-      </div>
-  </div>
+
 <h1 class="title-auth">Login</h1>
 <div class="input-form">
     <form method="POST" action="" autocomplete="off">
@@ -29,8 +21,9 @@
         </div>
     </form>
     <div class="error">
-        {% if form.username.errors or form.password.errors %}
+        {% if form.username.errors and form.password.errors %}
             The username or password you entered is incorrect.
+            {% elif form.username.errors %}
         {% endif %}
     </div>
     <div class="sign-up">

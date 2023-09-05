@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    About
+{% endblock %}
+
+{% block content%}
+<h1 class="about-header-one">About Rosu Mihai's Blog</h1>
+<div class="about-container">
+    <section class="about-section">
+        <h2 class="about-header-two">About Me</h2>
+        <p>
+            &nbsp;&nbsp;&nbsp;Hello, I'm Rosu Mihai, the creator of this blog. I'm passionate about sharing my thoughts, experiences, and knowledge with you through this platform.
+        </p>
+        <p>
+            &nbsp;&nbsp;&nbsp;I've built this blog from scratch using Python with Flask for the backend, HTML/CSS for the frontend, and SQLite for data storage. It's a place where you can read my posts on various topics, leave comments, and engage with the community.
+        </p>
+    </section>
+
+    <section class="about-section">
+        <h2 class="about-header-two">Programming Skills</h2>
+        <ul>
+            <li>Junior Python Developer</li>
+            <li>Strong Abilities in Flask and Databases</li>
+            <li>Proficient in HTML, CSS, and JavaScript</li>
+            <li>Familiar with React</li>
+            <li>Junior Full Stack Developer</li>
+            <li>Data Handling with Pandas</li>
+            <li>Web Scraping</li>
+            <li>Git and GitHub</li>
+            <li>Basic Knowledge of Linux, Docker</li>
+            <li>Familiar with Scrum/Agile Methodologies</li>
+        </ul>
+    </section>
+
+    <section class="about-section">
+        <h2 class="about-header-two"><a href="{{ url_for('contact') }}">Contact Me</a></h2>
+        <p>&nbsp;&nbsp;&nbsp;If you have any questions, suggestions, or just want to say hello, feel free to get in touch with me:</p>
+        <ul class="about-ul">
+            <li>Email:&nbsp;&nbsp; <a href="mailto:roshu_mihai@yahoo.com">roshu_mihai@yahoo.com</a></li>
+            <li>GitHub:&nbsp;&nbsp; <a href="https://github.com/roshumihai" target="_blank">github.com/roshumihai</a></li>
+            <li><strong>Facebook:</strong> <a href="https://www.facebook.com/profile.php?id=100009359224502" target="_blank">facebook.com/profile.php?id=100009359224502</a></li>
+            <li>Instagram:&nbsp;&nbsp; <a href="https://www.instagram.com/rosu.mihai/" target="_blank">instagram.com/rosu.mihai/</a></li>
+        </ul>
+    </section>
+</div>
+
+<footer>
+    <p>&copy; 2023 Rosu Mihai's Blog. All rights reserved.</p>
+</footer>
+
+{% endblock %}

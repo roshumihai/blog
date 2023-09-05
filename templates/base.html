@@ -8,6 +8,8 @@
         {% endblock %}
     </title>
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='about.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='message.css') }}">
     <script src="{{ url_for('static', filename='index.js') }}"></script>
     <script src="{{ url_for('static', filename='admin.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -16,6 +18,35 @@
 </head>
 
 <body>
+    <div class="topnav">
+        {% if current_user.is_authenticated %}
+        <a {% if request.endpoint == 'home' %}class="active"{% endif %} href="{{ url_for('home') }}">Home</a>
+        <a {% if request.endpoint == 'about' %}class="active"{% endif %} href="{{ url_for('about') }}">About</a>
+        <a {% if request.endpoint == 'contact' %}class="active"{% endif %} href="{{ url_for('contact') }}">Contact</a>
+        
+        {% if current_user.admin or current_user.username.lower() == "roshu" %}
+        <a {% if request.endpoint == 'admin' %}class="active"{% endif %} href="{{ url_for('admin') }}">Admin</a>
+        {% if current_user.username.lower() == "roshu" %}
+        <a {% if request.endpoint == 'messages' %}class="active"{% endif %} href="{{ url_for('messages') }}">Messages</a>
+        {% endif %}
+        {% endif %}
+        
+        <div class="login-container">
+            <p>{{ current_user.username.title() }}</p>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+        
+        {% else %}
+        <a {% if request.endpoint == 'dashboard' %}class="active"{% endif %} href="{{ url_for('dashboard') }}">Home</a>
+        <a {% if request.endpoint == 'about' %}class="active"{% endif %} href="{{ url_for('about') }}">About</a>
+        <a {% if request.endpoint == 'contact' %}class="active"{% endif %} href="{{ url_for('contact') }}">Contact</a>
+        
+        <div class="login-container">
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('register') }}">Register</a>
+        </div>
+        {% endif %}
+    </div>
     {% block content %}
 
     {% endblock %}

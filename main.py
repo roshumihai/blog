@@ -113,6 +113,20 @@ class Comment(db.Model):
     def __repr__(self):
         return f"<Comment id:{self.comment_id}, post_id: {self.post_id}, user: {self.user_id}, created_at: {self.created_at}"
 
+
+class Message(db.Model):
+    message_id = db.Column(db.Integer, primary_key=True)
+    sender_username = db.Column(db.String(20), nullable=False)
+    recipient_username = db.Column(db.String(20), nullable=False)
+    message_text = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime(timezone=True), server_default=func.now())
+
+    def __init__(self, sender_username, recipient_username, message_text):
+        self.sender_username = sender_username
+        self.recipient_username = recipient_username
+        self.message_text = message_text
+
+
 # Classes for FlaskForm
 class AddAdmin(FlaskForm):
     admin_user = TextAreaField(render_kw={"placeholder": "Enter username"})
@@ -196,19 +210,20 @@ def dashboard():
 @login_required
 def admin():
     add_admin_form = AddAdmin()
+
     if add_admin_form.validate_on_submit():
         username = add_admin_form.admin_user.data
-        users = User.query.all()
+        user = User.query.filter_by(username=username).first()
 
-        if username in [user.username for user in users]:
-            user = User.query.filter_by(username=username).first()
-            if user:
-                new_admin = Admin(user=user)
-
-                db.session.add(new_admin)
-                db.session.commit()
-                flash(f"{user.username.title()} has been added as an Admin")
-                return jsonify({'username': user.username})
+        if user:
+            new_admin = Admin(user=user)
+            db.session.add(new_admin)
+            db.session.commit()
+            flash(f"{user.username.title()} has been added as an Admin")
+            return jsonify({'username': user.username})
+        else:
+            flash(f"User with username '{username}' not found.")
+            print(f"User with username '{username}' not found.")
 
     if current_user.admin or current_user.username.lower() == "roshu":
         return render_template('admin.html', add_admin_form=add_admin_form)
@@ -410,6 +425,46 @@ def delete_admin():
         flash(f"'{username.title()}' has been removed from Admins")
     return redirect(url_for('admin'))
 
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/contact', methods=['POST', 'GET'])
+def contact():
+    if request.method == 'POST':
+        message_text = request.form.get('message')
+        sender_username = current_user.username if current_user.is_authenticated else 'Anonymous'
+
+        # Check if the recipient user 'roshu' exists
+        recipient_user = User.query.filter_by(username='roshu').first()
+
+        if recipient_user:
+            # Create a new message and save it to the database
+            new_message = Message(sender_username=sender_username, recipient_username='roshu', message_text=message_text)
+            db.session.add(new_message)
+            db.session.commit()
+            flash("Your message has been sent to roshu.")
+        else:
+            flash("The owner couldn't receive messages at the moment.")
+    return render_template('contact.html')
+
+
+@app.route('/messages')
+@login_required
+def messages():
+    if current_user.username.lower() != 'roshu':
+        return "Unauthorized", 401
+
+    for message in Message.query.all():
+        utc_message_created_at = message.timestamp.replace(tzinfo=pytz.utc)
+        local_message_created_at = utc_message_created_at.astimezone(pytz.timezone('Europe/Bucharest'))
+        message.timestamp = local_message_created_at
+
+    # Retrieve messages sent to 'roshu'
+    messages_to_roshu = Message.query.filter_by(recipient_username='roshu').order_by(Message.timestamp.desc()).all()
+
+    return render_template('messages.html', messages=messages_to_roshu)
 
 with app.app_context():
     db.create_all()

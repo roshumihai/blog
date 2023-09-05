@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Contact
+{% endblock %}
+
+{% block content%}
+
+<h1 class="about-header-one">Contact Page</h1>
+<div class="about-container">
+    <section class="about-section">
+        <h2 class="about-header-two">Contact Me</h2>
+        <p>&nbsp;&nbsp;&nbsp;If you have any questions, suggestions, or just want to say hello, feel free to get in touch.</p>
+        <p>I will leave below some contact information where you can find me:</p>
+    </section>
+    <section class="about-section">
+        <h2 class="about-header-two">Contact Information</h2>
+        <ul class="about-ul">
+            <li><strong>Location:</strong> Pitesti, Romania</li>
+            <li><strong>Email:</strong> <a href="mailto:roshu_mihai@yahoo.com">roshu_mihai@yahoo.com</a></li>
+            <li><strong>Phone:</strong> +40.740.915.025</li>
+            <li><strong>GitHub:</strong> <a href="https://github.com/roshumihai" target="_blank">github.com/roshumihai</a></li>
+            <li><strong>Facebook:</strong> <a href="https://www.facebook.com/profile.php?id=100009359224502" target="_blank">facebook.com/profile.php?id=100009359224502</a></li>
+            <li><strong>Instagram:</strong> <a href="https://www.instagram.com/rosu.mihai/" target="_blank">instagram.com/rosu.mihai/</a></li>
+        </ul>
+    </section>
+
+    <section class="about-section">
+        <h2 class="about-header-two">Write A Message To Me</h2>
+        <form action="" method="POST" class="contact-form">
+            <label for="message">Message:</label><br>
+            <textarea id="message" name="message" rows="4" cols="50"></textarea><br>
+            <button type="submit" class="contact-form-button">Send</button>
+        </form>
+    </section>
+</div>
+
+<footer>
+    <p>&copy; 2023 Rosu Mihai's Blog. All rights reserved.</p>
+</footer>
+
+{% endblock %}

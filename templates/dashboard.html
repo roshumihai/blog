@@ -15,16 +15,21 @@
     <div class="container">
       <div class="posts-container">
         <h1 class="header-latest-posts">Latest Posts</h1>
+        {% for post in latest_posts %}
         <ul class="ul-latest-posts">
-          {% for post in latest_posts %}
+          
               <li class="latest-post-list">
                 <h2 class="latest-post-title">{{ post.title }}</h2>
                 <p class="latest-post-comment">&nbsp;&nbsp;&nbsp;&nbsp;{{ post.comment }}</p>
-                <div class="latest-post-username">Created by &nbsp;&nbsp;<span class="latest-post-name">{{ post.user.username.title() }}</span></div>
-                <p class="latest-post-date">Created at: {{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                {% if post.image_ref %}
+                <img src="{{ url_for('static', filename='uploads/' + post.image_ref) }}" alt="Post Image" class="post-image">
+                {% endif %}
+                <div class="latest-post-username">Posted by &nbsp;&nbsp;<span class="latest-post-name">{{ post.user.username.title() }}</span></div>
+                <p class="latest-post-date"> {{ post.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
               </li>
-          {% endfor %}
+          
       </ul>
+      {% endfor %}
       </div>
     </div>
 

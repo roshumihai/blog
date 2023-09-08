@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='about.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='message.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='user-profile.css') }}">
     <script src="{{ url_for('static', filename='index.js') }}"></script>
     <script src="{{ url_for('static', filename='admin.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -33,7 +34,12 @@
         {% endif %}
         
         <div class="login-container">
-            <p>{{ current_user.username.title() }}</p>
+            <div class="profile-picture">
+                {% if user.image_ref %}
+                <img src="{{ url_for('static', filename='uploads/' + user.image_ref) }}" alt="Post Image" class="profile-image">
+                {% endif %}
+            </div>
+            <a href="{{ url_for('update_profile') }}">{{ current_user.username.title() }}</a>
             <a href="{{ url_for('logout') }}">Logout</a>
         </div>
         

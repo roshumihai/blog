@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, request, jsonify, flash
+from flask import Flask, render_template, url_for, redirect, request, jsonify, flash, session, g
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
@@ -69,6 +69,12 @@ class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable=False, unique=True)
     password = db.Column(db.String(80), nullable=False)
+    first_name = db.Column(db.String(50))
+    last_name = db.Column(db.String(50))
+    address = db.Column(db.String(100))
+    phone_number = db.Column(db.String(15))
+    email = db.Column(db.String(50), unique=True)
+    image_ref = db.Column(db.String(100))
     created_at = db.Column(db.DateTime(), default=datetime.now())
 
     def __init__(self, username, password):
@@ -209,6 +215,7 @@ def dashboard():
 @app.route('/admin', methods=['GET', 'POST'])
 @login_required
 def admin():
+    user = current_user
     add_admin_form = AddAdmin()
 
     if add_admin_form.validate_on_submit():
@@ -226,17 +233,15 @@ def admin():
             print(f"User with username '{username}' not found.")
 
     if current_user.admin or current_user.username.lower() == "roshu":
-        return render_template('admin.html', add_admin_form=add_admin_form)
+        return render_template('admin.html', add_admin_form=add_admin_form, user=user)
     else:
         return "Unauthorized", 401
 
 @app.route('/home', methods=['GET', 'POST'])
 @login_required
 def home():
-    logger = logging.getLogger('Home Path')
-
+    user = current_user
     create_post_form = CreatePostForm()
-
     add_comment_form = AddCommentForm()
 
     recent_posts = Post.query.order_by(Post.created_at.desc()).all()
@@ -257,7 +262,7 @@ def home():
         comment.created_at = local_comment_created_at
 
 
-    return render_template('home.html', create_post_form=create_post_form, posts=recent_posts, add_comment_form=add_comment_form)
+    return render_template('home.html', create_post_form=create_post_form, posts=recent_posts, add_comment_form=add_comment_form, user=user)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -268,6 +273,7 @@ def register():
         form.validate_password(form.password)
 
         new_user = User(username=form.username.data, password=form.password.data)
+        new_user.image_ref='profile_pic_global.png'
 
         logger.info(f"u.{new_user.username}, p.{form.password.data}")
 
@@ -281,6 +287,9 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+
     form = LoginForm()
 
     if form.validate_on_submit():
@@ -288,6 +297,7 @@ def login():
         logger.info("Form validation")
 
         username = form.username.data.lower()
+        session['user'] = username
         user = User.query.filter_by(username=username).first()
 
         if user:
@@ -308,11 +318,55 @@ def login():
     return render_template('login.html', form=form)
 
 
+
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
+    if "user" in session:
+        session.pop("user", None)
     logout_user()
     return redirect(url_for('dashboard'))
+
+
+@app.route('/update_profile', methods=['GET', 'POST'])
+@login_required
+def update_profile():
+    user = current_user
+    if request.method == 'POST':
+        # Retrieve form data
+        username = request.form['username']
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        address = request.form['address']
+        phone_number = request.form['phone_number']
+        email = request.form['email']
+        profile_pic = request.files['profile_pic']
+
+        # Update the user's information in the database
+        if username:
+            user.username = username
+        if first_name:
+            user.first_name = first_name
+        if last_name:
+            user.last_name = last_name
+        if address:
+            user.address = address
+        if phone_number:
+            user.phone_number = phone_number
+        if email:
+            user.email = email
+
+        if profile_pic:
+            filename = secure_filename(profile_pic.filename)
+
+            # Create a unique filename with UUID and save the uploaded file
+            filename = str(uuid.uuid4()) + '_' + filename
+            profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            user.image_ref = filename
+
+        db.session.commit()
+
+    return render_template('user-profile.html', user=user)
 
 
 @app.route('/reset-database/<target>', methods=['POST'])
@@ -428,10 +482,12 @@ def delete_admin():
 
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    user = current_user
+    return render_template('about.html', user=user)
 
 @app.route('/contact', methods=['POST', 'GET'])
 def contact():
+    user = current_user
     if request.method == 'POST':
         message_text = request.form.get('message')
         sender_username = current_user.username if current_user.is_authenticated else 'Anonymous'
@@ -447,12 +503,13 @@ def contact():
             flash("Your message has been sent to roshu.")
         else:
             flash("The owner couldn't receive messages at the moment.")
-    return render_template('contact.html')
+    return render_template('contact.html', user=user)
 
 
 @app.route('/messages')
 @login_required
 def messages():
+    user = current_user
     if current_user.username.lower() != 'roshu':
         return "Unauthorized", 401
 
@@ -464,7 +521,7 @@ def messages():
     # Retrieve messages sent to 'roshu'
     messages_to_roshu = Message.query.filter_by(recipient_username='roshu').order_by(Message.timestamp.desc()).all()
 
-    return render_template('messages.html', messages=messages_to_roshu)
+    return render_template('messages.html', messages=messages_to_roshu, user=user)
 
 with app.app_context():
     db.create_all()

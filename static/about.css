@@ -37,6 +37,10 @@
     
 }
 
+.about-skills li{
+    color: #e39215;
+}
+
 .about-ul {
     list-style: none;
 }

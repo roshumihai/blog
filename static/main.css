@@ -44,19 +44,18 @@ body {
     font-weight: bold;
 }
 
-/* Dashboard content*/
-
-.content {
-    text-align: center;
-    margin: 5% 5% 0 0;
+.profile-picture {
+    width: 50px; 
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 10px;
 }
 
-.content h1 {
-    color: #e39215;
-    font-size: 55px;
-}
-.content p {
-    font-size: 25px;
+.profile-image {
+    width: 100%; /* Make the image fill the container */
+    height: 100%;
+    object-fit: cover; /* Maintain aspect ratio and cover the container */
 }
 
 /* Login container */
@@ -73,15 +72,19 @@ body {
     align-items: center;
 }
 
-.login-container p {
+.login-container a {
+    display: block;
+    text-decoration: none;
     color: #a391fa;
     font-weight: bold;
     font-size: 18px;
     margin-right: 25px;
+    padding: 15px;
 }
 
-.login-container a {
-    padding: 15px;
+.login-container a:hover {
+    color: #888;
+    background-color: transparent;
 }
 
 /* Sign-up link */

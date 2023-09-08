@@ -13,7 +13,7 @@
             <ul class="messages-ul">
                 
                 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Message from &nbsp;&nbsp; <span class="messages-sender">{{ message.sender_username.title() }}</span></p>
-                <li>&nbsp;&nbsp;{{ message.message_text }}</li><br><br>
+                <li>&nbsp;&nbsp;"{{ message.message_text }}"</li><br><br>
                 <li class="message-li-time">{{ message.timestamp.strftime('%d %B %Y,  %I:%M %p') }}</li>
             </ul>
             {% endfor %}

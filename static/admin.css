@@ -1,0 +1,74 @@
+
+
+/* Admin page */
+.admin-container {
+    padding: 40px;
+    display: flex;
+    justify-content: space-between;
+}
+  
+/* Style for each admin column */
+.admin-column {
+    width: 48%; /* Adjust the width as needed */
+    padding: 40px;
+    background-color: transparent;
+    border: 2px solid #77767c;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 5px; /* Add margin for spacing */
+}
+
+
+.admin-column-one .admin-form{
+    margin-bottom: 80px;
+}
+
+.header-admin {
+    font-size: 16px;
+}
+
+.admin-container form {
+    margin-bottom: 4%;
+    padding: 15px;
+    border-bottom: 1px solid #77767c;
+    width: 25%;
+    max-height: fit-content;
+}
+
+#add-admin {
+    display:flex;
+    flex-direction: column;
+}
+
+.add-admin-textarea {
+    width: 250px;
+    background-color: transparent;
+    color: white;
+    font-size: 16px;
+    padding: 5px 10px;
+    resize: none;
+    border-bottom: 1px solid white;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+
+.admin-submit {
+    width: 120px;
+    background-color: #f44336;
+    color: white;
+    font-size: 12px;
+    padding: 10px 7px;
+    text-align: center;
+    margin-top: 3.5%;
+    cursor: pointer;
+}
+
+#remove-admin {
+    display: flex;
+    flex-direction: column;
+}  
+
+.admin-column-two .add-admin-textarea:focus {
+}

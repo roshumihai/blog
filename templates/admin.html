@@ -6,28 +6,40 @@
 
 {% block content %}
 <div class="admin-container">
-    <h1 class="header-admin">*** Reset Users ***</h1>
-    <form action="{{ url_for('reset_database', target='users') }}" method="post" id="reset-form">
-        <button id="reset-database" class="admin-submit" type="button" onclick="showConfirmation()">Reset database</button>
-    </form>
+    <div class="admin-column admin-column-one">
+        <div class="admin-form">
+            <h1 class="header-admin">*** Reset Users ***</h1>
+            <form action="{{ url_for('reset_database', target='users') }}" method="post" id="reset-form">
+                <button id="reset-database" class="admin-submit" type="button" onclick="showConfirmation()">Reset Users</button>
+        </form>
+        </div>
 
-    <h1 class="header-admin">*** Reset Posts ***</h1>
-    <form action="{{ url_for('reset_database', target='posts') }}" method="post" id="reset-posts">
-        <button id="reset-database-posts" class="admin-submit" type="button" onclick="showConfirmation2()">Reset database</button>
-    </form>
+        <div class="admin-form">
+            <h1 class="header-admin">*** Reset Posts ***</h1>
+            <form action="{{ url_for('reset_database', target='posts') }}" method="post" id="reset-posts">
+                <button id="reset-database-posts" class="admin-submit" type="button" onclick="showConfirmation2()">Reset Posts</button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="admin-column admin-column-two">
+        <div class="admin-form">
+            <h1 class="header-admin">*** Add Admin ***</h1>
+            <form action="{{ url_for('admin') }}" method="post" id="add-admin" autocomplete="off">
+                {{ add_admin_form.csrf_token }}
+                {{ add_admin_form.admin_user(class="add-admin-textarea") }}
+                {{ add_admin_form.submit(id="add-admin-submit", class="admin-submit") }}
+            </form>
+        </div>
 
-    <h1 class="header-admin">*** Add Admin ***</h1>
-    <form action="{{ url_for('admin') }}" method="post" id="add-admin">
-        {{ add_admin_form.csrf_token }}
-        {{ add_admin_form.admin_user(class="add-admin-textarea") }}
-        {{ add_admin_form.submit(id="add-admin-submit", class="admin-submit") }}
-    </form>
-
-    <h1 class="header-admin">*** Remove Admin ***</h1>
-    <form action="{{ url_for('delete_admin') }}" method="post" id="remove-admin">
-        <input type="text" class="add-admin-textarea" name="admin_user" placeholder="Enter admin username">
-        <button type="submit" id="add-admin-submit" class="admin-submit">Remove Admin</button>
-    </form>
+        <div class="admin-form">
+            <h1 class="header-admin">*** Remove Admin ***</h1>
+            <form action="{{ url_for('delete_admin') }}" method="post" id="remove-admin" autocomplete="off">
+                <input type="text" class="add-admin-textarea" name="admin_user" placeholder="Enter admin username">
+                <button type="submit" class="admin-submit">Remove Admin</button>
+            </form>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

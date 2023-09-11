@@ -220,16 +220,20 @@ def admin():
 
     if add_admin_form.validate_on_submit():
         username = add_admin_form.admin_user.data
-        user = User.query.filter_by(username=username).first()
 
+        existing_admin = Admin.query.filter(Admin.user.has(username=username)).first()
+        if existing_admin:
+            return redirect(url_for('admin'))
+
+        user = User.query.filter_by(username=username).first()
         if user:
             new_admin = Admin(user=user)
             db.session.add(new_admin)
             db.session.commit()
-            flash(f"{user.username.title()} has been added as an Admin")
-            return jsonify({'username': user.username})
+
+            return redirect(url_for('admin'))
+
         else:
-            flash(f"User with username '{username}' not found.")
             print(f"User with username '{username}' not found.")
 
     if current_user.admin or current_user.username.lower() == "roshu":
@@ -366,8 +370,18 @@ def update_profile():
 
         db.session.commit()
 
-    return render_template('user-profile.html', user=user)
+    return render_template('update-profile.html', user=user)
 
+
+@app.route('/user-profile/<username>')
+@login_required
+def user_profile(username):
+    user = User.query.filter_by(username=username).first()
+
+    if user:
+        return render_template('user-profile.html', user=user)
+    else:
+        return "User not found", 404
 
 @app.route('/reset-database/<target>', methods=['POST'])
 def reset_database(target):
@@ -473,11 +487,14 @@ def delete_admin():
     username = request.form.get('admin_user')
     admin_name = Admin.query.join(User).filter(User.username == username).first()
 
-    if admin:
+    if admin_name is not None:
         db.session.delete(admin_name)
         db.session.commit()
-        flash(f"'{username.title()}' has been removed from Admins")
-    return redirect(url_for('admin'))
+        admin_removed_message = f"'{username.title()}' has been removed from Admins"
+    else:
+        admin_removed_message = f"User '{username}' not found in Admins"
+
+    return redirect(url_for('admin', admin_removed_message=admin_removed_message))
 
 
 @app.route('/about')

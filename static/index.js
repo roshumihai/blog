@@ -24,19 +24,3 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
-
-// Capture the current scroll position
-function captureScrollPosition() {
-    return window.scrollY;
-  }
-
-// Restore the scroll position
-function restoreScrollPosition(scrollPosition) {
-    window.scrollTo(0, scrollPosition);
-  }
-
-// Capture scroll position before form submission
-document.querySelector('.add-comment-form').addEventListener('submit', function(event) {
-    var scrollPosition = captureScrollPosition();
-    document.querySelector('#scrollPosition').value = scrollPosition;
-  });

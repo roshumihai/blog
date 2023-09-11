@@ -1,63 +1,30 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Home
+    User Profile
 {% endblock %}
 
 {% block content%}
 
-
-<div class="user-profile-columns">
-    <!-- Left Column - Update Profile Form -->
-    <div class="user-profile-column">
-        <h1 class="user-profile-header">Update Profile</h1>
-        <div class="user-profile-container">
-            <form method="POST" action="/update_profile" enctype="multipart/form-data" class="user-profile-form">
-                <label for="username">Username:</label>
-                <input class="user-profile-input" type="text" id="username" name="username"><br>
-
-                <label for="first_name">First Name:</label>
-                <input class="user-profile-input" type="text" id="first_name" name="first_name"><br>
-
-                <label for="last_name">Last Name:</label>
-                <input class="user-profile-input" type="text" id="last_name" name="last_name"><br>
-
-                <label for="address">Address:</label>
-                <input class="user-profile-input" type="text" id="address" name="address"><br>
-
-                <label for="phone_number">Phone Number:</label>
-                <input class="user-profile-input" type="tel" id="phone_number" name="phone_number"><br>
-
-                <label for="email">Email:</label>
-                <input class="user-profile-input" type="email" id="email" name="email"><br>
-
-                <label for="profile_pic">Profile Picture:</label>
-                <input class="user-profile-input" type="file" id="profile_pic" name="profile_pic"><br>
-
-                <input class="user-profile-submit" type="submit" value="Update Profile">
-            </form>
-        </div>
-    </div>
-    <div class="user-profile-column">
-        <h2 class="user-profile-header">Your Information</h2>
-        <div class="user-profile-container">
-            <p><strong>Username:&nbsp;&nbsp;&nbsp;</strong> {{ user.username.title() }}</p>
-            <p><strong>First Name:&nbsp;&nbsp;&nbsp;</strong>{% if user.first_name %} {{ user.first_name.title() }} {% else %} None {% endif %}</p>
-            <p><strong>Last Name:&nbsp;&nbsp;&nbsp;</strong>{% if user.last_name %} {{ user.last_name.title() }} {% else %} None {% endif %}</p>
-            <p><strong>Address:&nbsp;&nbsp;&nbsp;</strong>{% if user.address %} {{ user.address.title() }} {% else %} None {% endif %}</p>
-            <p><strong>Phone number:&nbsp;&nbsp;&nbsp;</strong> {{ user.phone_number }}</p>
-            <p><strong>Email:&nbsp;&nbsp;&nbsp;</strong> {{ user.email }}</p>
-            <div style="display: flex; align-items: center;">
-                <p><strong>Profile Pic:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></p>
-                <div class="profile-picture">
-                    {% if user.image_ref %}
-                    <img src="{{ url_for('static', filename='uploads/' + user.image_ref) }}" alt="Post Image" class="profile-image">
-                    {% else %}
-                    None
-                    {% endif %}
-                </div>
+<div class="user-profile-column">
+    <h2 class="user-profile-header">{{ user.username.title() }} Profile</h2>
+    <div class="user-profile-container">
+        <p><strong>Username:&nbsp;&nbsp;&nbsp;</strong> {{ user.username.title() }}</p>
+        <p><strong>First Name:&nbsp;&nbsp;&nbsp;</strong>{% if user.first_name %} {{ user.first_name.title() }} {% else %} None {% endif %}</p>
+        <p><strong>Last Name:&nbsp;&nbsp;&nbsp;</strong>{% if user.last_name %} {{ user.last_name.title() }} {% else %} None {% endif %}</p>
+        <p><strong>Address:&nbsp;&nbsp;&nbsp;</strong>{% if user.address %} {{ user.address.title() }} {% else %} None {% endif %}</p>
+        <p><strong>Phone number:&nbsp;&nbsp;&nbsp;</strong> {{ user.phone_number }}</p>
+        <p><strong>Email:&nbsp;&nbsp;&nbsp;</strong> {{ user.email }}</p>
+        <div class="user-profile-pic-div">
+            <div class="user-profile-picture">
+                {% if user.image_ref %}
+                <img src="{{ url_for('static', filename='uploads/' + user.image_ref) }}" alt="Post Image" class="profile-image">
+                {% else %}
+                None
+                {% endif %}
             </div>
         </div>
+        <p class="user-profile-pic-text"><strong>Profile Pic:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></p>
     </div>
 </div>
 

@@ -30,16 +30,17 @@ body {
     padding: 14px 16px;
     text-decoration: none;
     font-size: 17px;
+    margin: 0 10px;
 }
 
 .topnav a:hover {
-    background-color: #f3eae8;
+    background-color: #dfdfdf;
     color: #181f3b;
     font-weight: bold;
 }
 
 .topnav a.active {
-    background-color: #f3eae8;
+    background-color: #dfdfdf;
     color: #181f3b;
     font-weight: bold;
 }
@@ -53,9 +54,9 @@ body {
 }
 
 .profile-image {
-    width: 100%; /* Make the image fill the container */
+    width: 100%; 
     height: 100%;
-    object-fit: cover; /* Maintain aspect ratio and cover the container */
+    object-fit: cover; 
 }
 
 /* Login container */
@@ -78,7 +79,7 @@ body {
     color: #a391fa;
     font-weight: bold;
     font-size: 18px;
-    margin-right: 25px;
+    margin-right: 5px;
     padding: 15px;
 }
 
@@ -143,340 +144,7 @@ body {
 
 /* Page-specific styles */
 
-/* Admin page */
-.admin-container {
-    margin: 30px 50px;
-}
-.header-admin {
-    font-size: 16px;
-}
-.admin-container form {
-    margin-bottom: 4%;
-    padding: 15px;
-    border-bottom: 1px solid #77767c;
-    width: 25%;
-    max-height: fit-content;
-}
 
-#add-admin {
-    display:flex;
-    flex-direction: column;
-}
-.add-admin-textarea {
-    width: 250px;
-    background-color: transparent;
-    color: white;
-    font-size: 16px;
-    padding: 5px 10px;
-    resize: none;
-    border-bottom: 1px solid white;
-    border-top: none;
-    border-left: none;
-    border-right: none;
-}
-
-.admin-submit {
-    width: 120px;
-    background-color: #f44336;
-    color: white;
-    font-size: 12px;
-    padding: 10px 7px;
-    text-align: center;
-    margin-top: 3.5%;
-    cursor: pointer;
-}
-
-#remove-admin {
-    display: flex;
-    flex-direction: column;
-}
-
-
-/* Home page */
-.home-container {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-}
-
-.column-1 {
-    width: 22%;
-    padding: 10px;
-    margin: 0 2%;
-    z-index: 0;
-}
-
-.column-2 {
-    width: 78%;
-    padding: 10px;
-    z-index: 2;
-}
-
-.column-1 h2 {
-    color: #e39215;
-    font-size: 24px;
-    font-family: Andale Mono, monospace;
-    margin-bottom: 25%;
-}
-
-.column-2 h2 {
-    color: #e39215;
-    font-size: 24px;
-    font-family: Andale Mono, monospace;
-}
-
-.column-comments {
-    width: 70%;
-}
-
-.column-post {
-    text-align: center;
-    width: 100%;
-}
-
-.column-post h3 {
-    text-align: start;
-    color: #d0ceff;
-    font-size: 14px;
-}
-
-.h2-posts {
-    text-align: center;
-}
-
-.comments-ul {
-    border-left: 1px solid #ffecff;
-    padding: 10px 40px;
-    list-style-type: none;
-}
-
-.add-comment-form {
-    position: relative;
-    border-bottom: thick double #77767c;
-    margin-bottom: 40px;
-    padding-bottom: 40px;
-}
-
-.post-form {
-    position: relative;
-}
-
-.delete-button-form {
-    position: relative;
-}
-
-.create-post-title {
-    width: 100%;
-    line-height: 20px;
-    padding: 15px 10px;
-    background-color: transparent;
-    color: white;
-    text-align: center;
-    font-size: 14px;
-    border: none;
-    border-bottom: 1px solid #a9b3c2;
-    transition: box-shadow 0.3s, border 0.3s;
-}
-
-.create-post-title:focus {
-    box-shadow: 0 0 5px rgba(224, 227, 230, 0.5); 
-    outline: none; 
-    border: none;
-}
-
-.create-post-title:focus::placeholder {
-    color: transparent;
-}
-
-.create-post-submit {
-    position: absolute;
-    bottom: -7px;
-    right: 0;
-    background-color: rgb(90, 199, 73);
-    color: white;
-    padding: 10px 15px;
-    font-size: 11px;
-    cursor: pointer;
-}
-
-.upload-image-post {
-    position: relative;
-    right: 7%;
-}
-
-.create-post-comment,
-.text-comments {
-    width: 100%;
-    height: 100px;
-    line-height: 20px;
-    padding: 15px;
-    background-color: transparent;
-    color: white;
-    font-size: 14px;
-    resize: none;
-}
-
-.text-comments {
-    margin: 30px 0px;
-}
-
-/* Style the scrollbar */
-.create-post-comment::-webkit-scrollbar,
-.text-comments::-webkit-scrollbar {
-    width: 8px;
-}
-
-/* Style the scrollbar thumb */
-.create-post-comment::-webkit-scrollbar-thumb,
-.text-comments::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 4px;
-}
-
-/* On hover, make the thumb darker */
-.create-post-comment::-webkit-scrollbar-thumb:hover,
-.text-comments::-webkit-scrollbar-thumb:hover {
-    background-color: #555;
-}
-
-.title-comments {
-    font-size: 18px;
-    color: #d0ceff;
-    font-family:Arial, Helvetica, sans-serif;
-    margin-left: 5%;
-}
-
-.post-comments {
-    color: #191934;
-    white-space: pre-line;
-    margin-left: 20px;
-    padding: 2px 30px 20px 30px;
-    font-size: 14px;
-    border-bottom: 1px solid #eaeff4;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    letter-spacing: 1.3px;
-    line-height: 25px;
-    background-color: #ffecff;
-    border-radius: 4px;
-}
-
-.submit-comments {
-    position: absolute;
-    bottom: 30px;
-    right: 1%;
-    padding: 8px 15px;
-    color: white;
-    background-color: rgb(71, 179, 54);
-    cursor: pointer;
-}
-
-.name-user-post {
-    position: relative;
-    float: left;
-    bottom: 11px;
-    padding: 13px 20px;
-    font-size: 10px;
-}
-
-.name-date-text {
-    color: #08c1ff;
-    letter-spacing: 1.7px;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.comment-list{
-    list-style-type: none;
-}
-
-.commented-post {
-  
-    margin: 50px auto 2%;
-    padding: 5px 15px;
-    position: relative;
-}
-
-.commented-post-user {
-    position: absolute;
-    top: 11px;
-    left: 25px;
-    font-size: 12px;
-    font-family:Arial, Helvetica, sans-serif;
-    color: #2098c0;
-    letter-spacing: 1.2px;
-}
-
-.commented-post-comment {
-    color: white;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    white-space: pre-line;
-    background-color: #2f2f61;
-    padding: 30px 20px 30px 25px;
-    letter-spacing: 1.2px;
-    line-height: 21px;
-    font-size: 14px;
-    border-radius: 4px;
-}
-
-.commented-post-date {
-    margin: -10px 0 10px 0;
-    float: right;
-    color: #ff78a8;
-    font-size: 14px;
-}
-
-.delete-comment-button {
-    position: absolute;
-    top: 21px;
-    right: 17px;
-    background-color: transparent;
-    border: none;
-    color: transparent;
-    font-size: 24px;
-    cursor: pointer;
-}
-
-.delete-comment-button:hover {
-    transition: 0.4s;
-    color: #c42121;
-    background-color: #77767c;
-}
-.delete-comment-button:hover::before {
-    content: "Delete Comment";
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 14px;
-    top: -30px;
-    left: 50%;
-    transform: translateX(-50%);
-    white-space: nowrap;
-}
-
-.delete-button {
-    position: absolute;
-    bottom: -27px;
-    right: 7px;
-    background-color: #be2018;
-    color: white;
-    padding: 6px 20px;
-    cursor: pointer;
-    font-size: 14px;
-    z-index: 2;
-}
-
-.post-image {
-    margin: 25px auto;
-    display: block;
-    max-height: 300px;
-    max-width: 500px;
-    border: 2px solid #ffecff;
-    padding: 10px;
-    cursor: pointer;
-}
 
 /* Adjustments for smaller screens */
 @media only screen and (max-width: 768px) {

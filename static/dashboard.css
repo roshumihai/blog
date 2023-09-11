@@ -1,20 +1,20 @@
 /* Dashboard content*/
 
-.content {
+.dashboard-content {
     text-align: center;
-    margin: 5% 5% 0 0;
+    margin: 1% 5% 0 0;
 }
 
-.content h1 {
+.dashboard-content h1 {
     color: #e39215;
-    font-size: 55px;
+    font-size: 35px;
 }
-.content p {
+.dashboard-content p {
     font-size: 25px;
 }
 
-.container {
-    width: 80%;
+.dashboard-container {
+    width: 70%;
     margin: 0 auto;
 }
 

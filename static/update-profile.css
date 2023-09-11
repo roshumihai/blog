@@ -1,0 +1,61 @@
+.update-profile-columns {
+    display: flex;
+    justify-content: space-between;
+    color: #333333;
+    margin: 20px 30px;
+}
+
+/* Style for each column */
+.update-profile-column {
+    flex: 1;
+    padding: 20px;
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 5px 30px;
+}
+
+.update-profile-header{
+    width: 100%;
+    text-align: center;
+    font-size: 25px;
+    color: #0056b3;
+}
+
+.update-profile-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Style for labels */
+.update-profile-form label {
+    font-weight: bold;
+}
+
+/* Style for input fields */
+.update-profile-input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+/* Style for the submit button */
+.update-profile-submit {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+/* Style for the submit button on hover */
+.update-profile-submit:hover {
+    background-color: #0056b3;
+}

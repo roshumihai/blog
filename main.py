@@ -75,6 +75,7 @@ class User(db.Model):
     phone_number = db.Column(db.String(15))
     email = db.Column(db.String(50), unique=True)
     image_ref = db.Column(db.String(100))
+    is_online = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime(), default=datetime.now())
 
     def __init__(self, username, password):
@@ -245,10 +246,15 @@ def admin():
 @login_required
 def home():
     user = current_user
+
     create_post_form = CreatePostForm()
     add_comment_form = AddCommentForm()
 
+    usernames = [username[0] for username in db.session.query(User.username).all()]
+    users = User.query.all()
+
     recent_posts = Post.query.order_by(Post.created_at.desc()).all()
+
     for post in recent_posts:
         post.comments = Comment.query.filter_by(post_id=post.post_id).order_by(Comment.created_at.desc()).all()
         post.is_owner = post.user_id == current_user.user_id
@@ -266,7 +272,7 @@ def home():
         comment.created_at = local_comment_created_at
 
 
-    return render_template('home.html', create_post_form=create_post_form, posts=recent_posts, add_comment_form=add_comment_form, user=user)
+    return render_template('home.html', create_post_form=create_post_form, posts=recent_posts, add_comment_form=add_comment_form, user=user, usernames=usernames, users=users)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -306,6 +312,8 @@ def login():
 
         if user:
             logger.info("User found.")
+            user.is_online = True
+            db.session.commit()
 
             if bcrypt.check_password_hash(user.password, form.password.data):
                 logger.info("Password matched. Logging in...")
@@ -326,8 +334,17 @@ def login():
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
+    username=session['user']
+
+    user = User.query.filter_by(username=username).first()
+
+    user.is_online = False
+    db.session.commit()
+
     if "user" in session:
         session.pop("user", None)
+
+
     logout_user()
     return redirect(url_for('dashboard'))
 
@@ -427,11 +444,22 @@ def create_post():
 
     return redirect(url_for('home'))
 
+
+@app.route('/post-details/<int:post_id>', methods=['GET', 'POST'])
+def post_details(post_id):
+    user = current_user
+    add_comment_form = AddCommentForm()
+    post = Post.query.filter_by(post_id=post_id).first()
+    comments = Comment.query.filter_by(post_id=post_id).order_by(Comment.comment_id.desc()).all()
+
+    return render_template('post-details.html', add_comment_form=add_comment_form, post=post, user=user, comments=comments)
+
 @app.route('/add_comment/<int:post_id>', methods=['POST'])
 @login_required
 def add_comment(post_id):
     post = Post.query.get_or_404(post_id)
     add_comment_form = AddCommentForm()
+    source = request.form.get('source')
 
     if add_comment_form.validate_on_submit():
         comment_text = add_comment_form.comment.data
@@ -452,7 +480,11 @@ def add_comment(post_id):
             add_comment_form.comment.data = ""
             add_comment_form.image.data = None
 
-    return redirect(url_for('home'))
+    if source == 'home':
+        return redirect(url_for('home'))
+    elif source == 'post-details':
+        return redirect(url_for('post_details', post_id=post_id))
+
 
 
 @app.route('/delete_comment/<int:comment_id>', methods=['POST'])
@@ -542,6 +574,11 @@ def messages():
 
 with app.app_context():
     db.create_all()
+
+
+@app.route('/text-messanger')
+def text_messenger():
+    return render_template('text-messenger.html')
 
 
 if __name__ == '__main__':

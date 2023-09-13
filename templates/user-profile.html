@@ -9,12 +9,12 @@
 <div class="user-profile-column">
     <h2 class="user-profile-header">{{ user.username.title() }} Profile</h2>
     <div class="user-profile-container">
-        <p><strong>Username:&nbsp;&nbsp;&nbsp;</strong> {{ user.username.title() }}</p>
-        <p><strong>First Name:&nbsp;&nbsp;&nbsp;</strong>{% if user.first_name %} {{ user.first_name.title() }} {% else %} None {% endif %}</p>
-        <p><strong>Last Name:&nbsp;&nbsp;&nbsp;</strong>{% if user.last_name %} {{ user.last_name.title() }} {% else %} None {% endif %}</p>
-        <p><strong>Address:&nbsp;&nbsp;&nbsp;</strong>{% if user.address %} {{ user.address.title() }} {% else %} None {% endif %}</p>
-        <p><strong>Phone number:&nbsp;&nbsp;&nbsp;</strong> {{ user.phone_number }}</p>
-        <p><strong>Email:&nbsp;&nbsp;&nbsp;</strong> {{ user.email }}</p>
+        <p><strong>Username:&nbsp;&nbsp;&nbsp;</strong><span> {{ user.username.title() }}</span></p>
+        <p><strong>First Name:&nbsp;&nbsp;&nbsp;</strong><span> {% if user.first_name %} {{ user.first_name.title() }} {% else %} None {% endif %}</span></p>
+        <p><strong>Last Name:&nbsp;&nbsp;&nbsp;</strong><span> {% if user.last_name %} {{ user.last_name.title() }} {% else %} None {% endif %}</span></p>
+        <p><strong>Address:&nbsp;&nbsp;&nbsp;</strong><span> {% if user.address %} {{ user.address.title() }} {% else %} None {% endif %}</span></p>
+        <p><strong>Phone number:&nbsp;&nbsp;&nbsp;</strong><span>  {{ user.phone_number }}</span></p>
+        <p><strong>Email:&nbsp;&nbsp;&nbsp;</strong><span>  {{ user.email }}</span></p>
         <div class="user-profile-pic-div">
             <div class="user-profile-picture">
                 {% if user.image_ref %}
@@ -25,6 +25,10 @@
             </div>
         </div>
         <p class="user-profile-pic-text"><strong>Profile Pic:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</strong></p>
+    </div>
+
+    <div class="user-profile-textmsg">
+        <a href="{{ url_for('text_messenger') }}">Send a message</a>
     </div>
 </div>
 

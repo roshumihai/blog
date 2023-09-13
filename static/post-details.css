@@ -1,0 +1,19 @@
+.post-detail-container {
+    position: relative;
+    width: 60%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #88888821;
+    border-radius: 15px;
+    border: 2px solid #ffffff31
+}
+
+.post-detail-header {
+    color: #d0ceff;
+}
+
+.post-detail-text {
+    font-size: 17px;
+    letter-spacing: 0.6;
+    line-height: 24px;
+}

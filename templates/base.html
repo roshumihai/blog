@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='message.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='update-profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='post-details.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='user-profile.css') }}">
     <script src="{{ url_for('static', filename='index.js') }}"></script>
     <script src="{{ url_for('static', filename='admin.js') }}"></script>
@@ -39,8 +40,10 @@
         <div class="login-container">
             <div class="profile-picture">
                 {% if user.image_ref %}
+                <a href="{{ url_for('user_profile', username=user.username ) }}">
                 <img src="{{ url_for('static', filename='uploads/' + user.image_ref) }}" alt="Post Image" class="profile-image">
                 {% endif %}
+                </a>
             </div>
             <a href="{{ url_for('update_profile') }}">{{ current_user.username.title() }}</a>
             <a href="{{ url_for('logout') }}">Logout</a>

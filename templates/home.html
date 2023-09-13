@@ -6,102 +6,132 @@
 
 {% block content%}
 
-    <div class="home-container">
-      <!-- COLUMN 1 CREATE NEW POST -->
-      <div class="column-1">
+<div class="home-container">
+
+    <!-- COLUMN 1 CREATE NEW POST -->
+
+    <div class="column-1">
         <div class="column-post">
-          <h2>Create New Post</h2>
-          <form action="{{ url_for('create_post') }}" class="post-form" method="post" enctype="multipart/form-data">
-            {{ create_post_form.csrf_token }}
-              <h3>Title</h3><br>
-            {{ create_post_form.title(class="create-post-title") }}<br><br>
-              <h3>Description</h3>
-            {{ create_post_form.comment(class="create-post-comment") }}<br><br>
-            <input type="file" name="image">
-            {{ create_post_form.submit(class="create-post-submit") }}
-          </form>
+            <h2>Create New Post</h2>
+            <form action="{{ url_for('create_post') }}" class="post-form" method="post" enctype="multipart/form-data">
+                {{ create_post_form.csrf_token }}
+                <h3>Title</h3><br>
+                {{ create_post_form.title(class="create-post-title") }}<br><br>
+                <h3>Description</h3>
+                {{ create_post_form.comment(class="create-post-comment") }}<br><br>
+                <input type="file" name="image">
+                {{ create_post_form.submit(class="create-post-submit") }}
+            </form>
         </div>
-      </div>
+    </div>
       
       <!-- COLUMN 2 RECENT POSTS -->
 
-      <div class="column-2">
+    <div class="column-2">
         <div class="column-comments">
-          <h2 class="h2-posts">Recent Posts</h2>
-          <ul class="comments-ul">
-              {% for post in posts %}
-              <li>
-                <!-- TITLE -->
-                <h3 class="title-comments">{{ post.title.title() }}</h3>
-                
-                <!-- POST CONTENT -->
-                <p class="post-comments">
-                  &nbsp;&nbsp;&nbsp;&nbsp;{{ post.comment }}
-                </p>
-                
-                <!-- UPLOADED IMAGE -->
-                {% if post.image_ref %}
-                <img src="{{ url_for('static', filename='uploads/' + post.image_ref) }}" alt="Post Image" class="post-image">
-                {% endif %}
-                  {% if post.user.username %}
+            <h2 class="home-h2">Recent Posts</h2>
+            <ul class="comments-ul">
+                {% for post in posts %}
+                <li>
+                    <!-- TITLE -->
+                    <a href="{{ url_for('post_details', post_id=post.post_id) }}" class="home-post-link">
+                        <h3 class="title-comments">{{ post.title.title() }}</h3>
+                        
+                        <!-- POST CONTENT -->
+                        <p class="post-comments">
+                        &nbsp;&nbsp;&nbsp;&nbsp;{{ post.comment }}
+                        </p>
+                        
+                        <!-- UPLOADED IMAGE -->
+                        {% if post.image_ref %}
+                        <img src="{{ url_for('static', filename='uploads/' + post.image_ref) }}" alt="Post Image" class="post-image">
+                        {% endif %}
+                    </a>
 
-                  <!-- DETAILS OF POST: NAME, DATE, HOUR -->
-                <div class="name-user-post">
-                  Posted by &nbsp;&nbsp;
-                  <span class="name-date-text"><a href="{{ url_for('user_profile', username=post.user.username ) }}">{{ post.user.username.title() }}</a></span>
-                  &nbsp; at&nbsp;&nbsp;
-                  <span class="name-date-text"> {{ post.created_at.strftime('%d %B %Y,  %I:%M %p') }}</span>
-                </div>
-                  {% endif %}
-                
-                  <!-- DELETE POST BUTTON -->
-                {% if post.is_owner or current_user.username.lower() == "roshu" %}
-                <form action="{{ url_for('delete_post', post_id=post.post_id) }}" method="post" class="delete-button-form">
-                  {{ post.csrf_token }}
-                  <button type="submit" class="delete-button">Delete</button>
-                </form>
-                {% endif %}
-              </li>
-              
-
-              <ul class="comment-list">
-                {% for comment in post.comments %}
-                  {% if comment.user.username %}
-                <li class="commented-post">
-                    <!-- NAME OF THE USER WHO COMMENT -->
-                    <h3 class="commented-post-user"><a href="{{ url_for('user_profile', username=comment.user.username )}}">{{ comment.user.username.title() }}</a></h3>
-
-                    <!-- DELETE COMMENT FORM AND BUTTON -->
-                    {% if current_user.is_authenticated and (current_user == comment.user or current_user.admin or current_user.username.lower() == "roshu") %}
-                    <form action="{{ url_for('delete_comment', comment_id=comment.comment_id) }}" method="post">
-                        <button class="delete-comment-button">X</button>
+                    {% if post.user.username %}
+                    <!-- DETAILS OF POST: NAME, DATE, HOUR -->
+                    <div class="name-user-post">
+                        Posted by &nbsp;&nbsp;
+                        <span class="name-date-text"><a href="{{ url_for('user_profile', username=post.user.username ) }}">{{ post.user.username.title() }}</a></span>
+                        &nbsp; at&nbsp;&nbsp;
+                        <span class="name-date-text"> {{ post.created_at.strftime('%d %B %Y,  %I:%M %p') }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- DELETE POST BUTTON -->
+                    {% if post.is_owner or current_user.username.lower() == "roshu" %}
+                    <form action="{{ url_for('delete_post', post_id=post.post_id) }}" method="post" class="delete-button-form">
+                        {{ post.csrf_token }}
+                        <button type="submit" class="delete-button">Delete</button>
                     </form>
                     {% endif %}
-                    <!-- THE COMMENT CONTENT -->
-                    <p class="commented-post-comment">&nbsp;&nbsp;&nbsp;&nbsp;{{ comment.text }}
-                      {% if comment.image_ref %}
-                      <img src="{{ url_for('static', filename='uploads/' + comment.image_ref) }}" alt="Comment Image" class="post-image">
-                      {% endif %}
-                    </p>
-
-                    <!-- COMMENT POSTED DATE -->
-                    <p class="commented-post-date">{{ comment.created_at.strftime('%d %B %Y,  %I:%M %p') }}</p>
                 </li>
-                  {% endif %}
-                
-                {% endfor %}
-              </ul>
               
-              <form action="{{ url_for('add_comment', post_id=post.post_id) }}" method="post" class="add-comment-form" enctype="multipart/form-data">
-                {{ add_comment_form.csrf_token }}
-                {{ add_comment_form.comment(class="text-comments") }}
-                <input type="file" name="image">
-                {{ add_comment_form.submit(class="submit-comments") }}
-              </form>
-              {% endfor %}
-          </ul>
+
+                <ul class="comment-list">
+                {% for comment in post.comments %}
+                    {% if comment.user.username %}
+                    <li class="commented-post">
+                        <!-- NAME OF THE USER WHO COMMENT -->
+                        <h3 class="commented-post-user"><a href="{{ url_for('user_profile', username=comment.user.username )}}">{{ comment.user.username.title() }}</a></h3>
+
+                        <!-- DELETE COMMENT FORM AND BUTTON -->
+                        {% if current_user.is_authenticated and (current_user == comment.user or current_user.admin or current_user.username.lower() == "roshu") %}
+                        <form action="{{ url_for('delete_comment', comment_id=comment.comment_id) }}" method="post">
+                            <button class="delete-comment-button">X</button>
+                        </form>
+                        {% endif %}
+                        <!-- THE COMMENT CONTENT -->
+                        <p class="commented-post-comment">&nbsp;&nbsp;&nbsp;&nbsp;{{ comment.text }}
+                          {% if comment.image_ref %}
+                          <img src="{{ url_for('static', filename='uploads/' + comment.image_ref) }}" alt="Comment Image" class="post-image">
+                          {% endif %}
+                        </p>
+
+                        <!-- COMMENT POSTED DATE -->
+                        <p class="commented-post-date">{{ comment.created_at.strftime('%d %B %Y,  %I:%M %p') }}</p>
+                    </li>
+                    {% endif %}               
+                {% endfor %}
+                </ul>
+              
+                <form action="{{ url_for('add_comment', post_id=post.post_id) }}" method="post" class="add-comment-form" enctype="multipart/form-data">
+                    {{ add_comment_form.csrf_token }}
+                    {{ add_comment_form.comment(class="text-comments") }}
+                    <input type="file" name="image">
+                    {{ add_comment_form.submit(class="submit-comments") }}
+                    <input type="hidden" name="source" value="home">
+                </form>
+                {% endfor %}
+            </ul>
         </div>
-      </div>
     </div>
+
+    <div class="column-3">
+        <div class="column-users">
+            <div class="online-column"></div>
+                <h3 class="online-ul">Online</h3>
+                <ul class="home-users-online">    
+                    {% for user in users%}
+                        {% if user.is_online %}             
+                        <li><a href="{{ url_for('user_profile', username=user.username) }}">{{ user.username.title() }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div class="offline-column"></div>
+                <h3 class="offline-ul">Offline</h3>
+                <ul class="home-users-online">    
+                    {% for user in users%}
+                        {% if not user.is_online %}
+                        <li><a href="{{ url_for('user_profile', username=user.username) }}">{{ user.username.title() }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
     
 {% endblock %}

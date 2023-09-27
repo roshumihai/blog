@@ -28,6 +28,27 @@
             <form action="{{ url_for('admin') }}" method="post" id="add-admin" autocomplete="off">
                 {{ add_admin_form.csrf_token }}
                 {{ add_admin_form.admin_user(class="add-admin-textarea") }}
+
+                <div class="flash-messages">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            <ul class="flash">
+                                {% for message in messages %}
+                                    {% if "Please log in" in message %}
+                                        <li class="login-message">{{ message }}</li>
+                                    {% elif "is now an admin" in message %}
+                                        <li class="admin-added">{{ message }}</li>
+                                    {% elif "is already an admin" in message %}
+                                        <li class="admin-already">{{ message }}</li>
+                                    {% elif "was not found" in message %}
+                                        <li class="admin-not-found">{{ message }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+
                 {{ add_admin_form.submit(id="add-admin-submit", class="admin-submit") }}
             </form>
         </div>
@@ -36,6 +57,25 @@
             <h1 class="header-admin">*** Remove Admin ***</h1>
             <form action="{{ url_for('delete_admin') }}" method="post" id="remove-admin" autocomplete="off">
                 <input type="text" class="add-admin-textarea" name="admin_user" placeholder="Enter admin username">
+
+                <div class="flash-messages">
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            <ul class="flash">
+                                {% for message in messages %}
+                                    {% if "Please log in" in message %}
+                                        <li class="login-message">{{ message }}</li>
+                                    {% elif "has been removed from Admins" in message %}
+                                        <li class="admin-removed">{{ message }}</li>
+                                    {% elif "User not found in Admins" in message %}
+                                        <li class="admin-not-found">{{ message }}</li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    {% endwith %}
+                </div>
+           
                 <button type="submit" class="admin-submit">Remove Admin</button>
             </form>
         </div>

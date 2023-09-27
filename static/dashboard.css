@@ -42,9 +42,10 @@
 
 .latest-post-comment {
     padding: 15px 30px;
-    background-color: rgba(222, 222, 888, 0.1);
+    background-color: rgba(999, 999, 999, 0.2);
     border: 2px solid #77767c;
     border-radius: 4px;
+    color: #111;
 }
 
 .latest-post-username {

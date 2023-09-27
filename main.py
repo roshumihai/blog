@@ -32,7 +32,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///"+ os.path.join(basedir, "dat
 app.config["SECRET_KEY"] = "Abecedar1234"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['TIMEZONE'] = 'Europe/Bucharest'
-app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=7)
+app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=1)
 app.config['REMEMBER_COOKIE_SECURE'] = True
 app.config['REMEMBER_COOKIE_HTTPONLY'] = True
 app.config['REMEMBER_COOKIE_SAMESITE'] = 'Strict'
@@ -99,6 +99,7 @@ class Post(db.Model):
     post_id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     comment = db.Column(db.Text, nullable=True)
+    comments = db.relationship('Comment', backref='post', cascade='all, delete-orphan')
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), nullable=False)
     user = db.relationship('User', backref=db.backref('posts', lazy='joined'))
     image_ref = db.Column(db.String(100), nullable=True)
@@ -210,7 +211,7 @@ def dashboard():
         local_created_at = utc_created_at.astimezone(pytz.timezone('Europe/Bucharest'))
         post.created_at = local_created_at
 
-    return render_template('dashboard.html', latest_posts=latest_posts)
+    return render_template('dashboard.html', user=current_user, latest_posts=latest_posts)
 
 
 @app.route('/admin', methods=['GET', 'POST'])
@@ -224,6 +225,7 @@ def admin():
 
         existing_admin = Admin.query.filter(Admin.user.has(username=username)).first()
         if existing_admin:
+            flash(f"{username} is already an admin.")
             return redirect(url_for('admin'))
 
         user = User.query.filter_by(username=username).first()
@@ -232,10 +234,11 @@ def admin():
             db.session.add(new_admin)
             db.session.commit()
 
+            flash(f"{username} is now an admin!")
             return redirect(url_for('admin'))
 
         else:
-            print(f"User with username '{username}' not found.")
+            flash(f"The username '{username}' was not found.")
 
     if current_user.admin or current_user.username.lower() == "roshu":
         return render_template('admin.html', add_admin_form=add_admin_form, user=user)
@@ -276,6 +279,9 @@ def home():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+
     logger = logging.getLogger('register_route')
     form = RegisterForm()
 
@@ -308,6 +314,7 @@ def login():
 
         username = form.username.data.lower()
         session['user'] = username
+
         user = User.query.filter_by(username=username).first()
 
         if user:
@@ -334,15 +341,19 @@ def login():
 @app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
-    username=session['user']
-
-    user = User.query.filter_by(username=username).first()
-
-    user.is_online = False
-    db.session.commit()
+    username = None
 
     if "user" in session:
-        session.pop("user", None)
+        username = session['user']
+
+    if username is not None:
+        user = User.query.filter_by(username=username).first()
+
+        user.is_online = False
+        db.session.commit()
+
+        if "user" in session:
+            session.pop("user", None)
 
 
     logout_user()
@@ -354,7 +365,6 @@ def logout():
 def update_profile():
     user = current_user
     if request.method == 'POST':
-        # Retrieve form data
         username = request.form['username']
         first_name = request.form['first_name']
         last_name = request.form['last_name']
@@ -363,7 +373,6 @@ def update_profile():
         email = request.form['email']
         profile_pic = request.files['profile_pic']
 
-        # Update the user's information in the database
         if username:
             user.username = username
         if first_name:
@@ -380,7 +389,6 @@ def update_profile():
         if profile_pic:
             filename = secure_filename(profile_pic.filename)
 
-            # Create a unique filename with UUID and save the uploaded file
             filename = str(uuid.uuid4()) + '_' + filename
             profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             user.image_ref = filename
@@ -408,6 +416,7 @@ def reset_database(target):
         db.session.query(User).delete()
     elif target == 'posts':
         db.session.query(Post).delete()
+        db.session.query(Comment).delete()
     db.session.commit()
 
     logger.info('Database was deleted..')
@@ -426,11 +435,10 @@ def create_post():
 
         if title:
             if image:
-                # Generate a secure filename for the uploaded file
                 filename = secure_filename(image.filename)
-                # Create a unique filename with UUID and save the uploaded file
                 unique_filename = str(uuid.uuid4()) + '_' + filename
                 image.save(os.path.join(app.config['UPLOAD_FOLDER'], unique_filename))
+
                 new_post = Post(title=title, comment=comment, user_id=current_user.user_id, image_ref=unique_filename)
             else:
                 new_post = Post(title=title, comment=comment, user_id=current_user.user_id)
@@ -522,11 +530,11 @@ def delete_admin():
     if admin_name is not None:
         db.session.delete(admin_name)
         db.session.commit()
-        admin_removed_message = f"'{username.title()}' has been removed from Admins"
+        flash(f"'{username.title()}' has been removed from Admins")
     else:
-        admin_removed_message = f"User '{username}' not found in Admins"
+        flash(f"User '{username}' not found in Admins")
 
-    return redirect(url_for('admin', admin_removed_message=admin_removed_message))
+    return redirect(url_for('admin'))
 
 
 @app.route('/about')
@@ -541,11 +549,9 @@ def contact():
         message_text = request.form.get('message')
         sender_username = current_user.username if current_user.is_authenticated else 'Anonymous'
 
-        # Check if the recipient user 'roshu' exists
         recipient_user = User.query.filter_by(username='roshu').first()
 
         if recipient_user:
-            # Create a new message and save it to the database
             new_message = Message(sender_username=sender_username, recipient_username='roshu', message_text=message_text)
             db.session.add(new_message)
             db.session.commit()
@@ -567,7 +573,6 @@ def messages():
         local_message_created_at = utc_message_created_at.astimezone(pytz.timezone('Europe/Bucharest'))
         message.timestamp = local_message_created_at
 
-    # Retrieve messages sent to 'roshu'
     messages_to_roshu = Message.query.filter_by(recipient_username='roshu').order_by(Message.timestamp.desc()).all()
 
     return render_template('messages.html', messages=messages_to_roshu, user=user)
@@ -578,7 +583,8 @@ with app.app_context():
 
 @app.route('/text-messanger')
 def text_messenger():
-    return render_template('text-messenger.html')
+    user = current_user
+    return render_template('text-messenger.html', user=user)
 
 
 if __name__ == '__main__':

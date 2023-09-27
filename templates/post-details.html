@@ -7,6 +7,7 @@
 {% block content%}
 
 <div class="post-detail-container">
+    <a href="{{ url_for('user_profile', username=post.user.username) }}" class="post-detail-username">{{ post.user.username.title() }}</a>
     <h1 class="post-detail-header">&nbsp;&nbsp;&nbsp;&nbsp;{{ post.title.title() }}</h1>
     <div class="post-detail-content">
         <p class="post-detail-text">&nbsp;&nbsp;&nbsp;&nbsp;{{ post.comment.capitalize() }}</p>

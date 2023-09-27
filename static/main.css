@@ -132,12 +132,16 @@ body {
 .input-form .submit-form {
     color: #f3eae8;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    background-color: rgba(60, 179, 113, 0.35);
+    background-color: rgba(60, 379, 113, 0.35);
     padding: 15px;
     width: 300px;
     font-size: large;
     border: 1px solid #f3eae8;
     border-radius: 5px;
+}
+
+.submit-form {
+    cursor: pointer;
 }
 
 /* Error messages */

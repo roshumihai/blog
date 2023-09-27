@@ -70,5 +70,12 @@
     flex-direction: column;
 }  
 
-.admin-column-two .add-admin-textarea:focus {
+.flash-messages {
+    width: 350px;
+    color: #f44336;
+}
+
+.flash {
+    list-style-type: none;
+    transform: translateX(-30px);
 }
